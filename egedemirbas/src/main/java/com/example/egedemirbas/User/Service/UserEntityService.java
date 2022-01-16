@@ -24,4 +24,8 @@ public class UserEntityService {
     public User save(User user){
         return userDao.save(user);
     }
+
+    public void delete(User user){
+        userDao.delete(user);
+    }
 }
