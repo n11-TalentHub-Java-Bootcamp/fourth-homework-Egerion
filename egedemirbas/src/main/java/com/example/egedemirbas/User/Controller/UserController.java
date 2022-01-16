@@ -24,11 +24,13 @@ public class UserController {
         return userEntityService.findAll();
     }
 
+    //kullanıcıları dönen
     @GetMapping("/{id}")
     public User findUserById(@PathVariable Long id){
         return userEntityService.findUserById(id);
     }
 
+    //Kullanıcı kaydeden,
     @PostMapping("")
     public ResponseEntity<Object> saveFromDto(@RequestBody UserDto userDto){
 
@@ -42,6 +44,7 @@ public class UserController {
         return ResponseEntity.created(uri).build();
     }
 
+    //silen,
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
         User user = userEntityService.findUserById(id);
