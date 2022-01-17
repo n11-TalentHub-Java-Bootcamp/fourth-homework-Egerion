@@ -21,6 +21,7 @@ public class DeptCollect implements Serializable {
     private Long id;
     private Long deptId;
     private Long userId;
+    private Long mainDeptId;
     private Date transacDate;
     private BigDecimal amount;
     private EnumDeptType deptType;

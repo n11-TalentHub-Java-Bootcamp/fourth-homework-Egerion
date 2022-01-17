@@ -55,7 +55,7 @@ public class DeptController {
     }
 
     //Bir kullanıcının toplam borç tutarını dönen bir servis olmaldıır.
-    @PostMapping("/total/norma-type/user/{id}")
+    @GetMapping("/total/normal/user/{userId}")
     public BigDecimal findTotalNormalDeptByUserId(@PathVariable Long userId){
         BigDecimal totalLateDept = BigDecimal.valueOf(0.0);
         User user = userEntityService.findUserById(userId);
@@ -66,7 +66,7 @@ public class DeptController {
     }
 
     //Bir kullanıcının vadesi geçmiş toplam borç tutarını dönen bir servis olmaldıır.
-    @PostMapping("/total/late-type/user/{id}")
+    @GetMapping("/total/late/user/{userId}")
     public BigDecimal findTotalLateDeptByUserId(@PathVariable Long userId){
         BigDecimal totalLateDept = BigDecimal.valueOf(0.0);
         User user = userEntityService.findUserById(userId);
@@ -78,7 +78,7 @@ public class DeptController {
 
     //Borç kaydeden, (sadece normal borçlar)
     @PostMapping("/{userId}")
-    public Dept saveNormalDept(@PathVariable Long userId, Dept dept){
+    public Dept saveNormalDept(@PathVariable Long userId, @RequestBody Dept dept){
         Dept newDept = null;
         User user = userEntityService.findUserById(userId);
         if(user != null && dept.getEnumDeptType() == EnumDeptType.NORMAL){

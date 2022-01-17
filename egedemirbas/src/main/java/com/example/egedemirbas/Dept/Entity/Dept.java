@@ -21,9 +21,11 @@ public class Dept implements Serializable {
     @Id
     @Column(name = "id", nullable = false)
     private Long id;
+    private Long mainDeptId;
     //@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     //private User user;
     private Long userId;
+    @Column(precision = 10, scale = 2)
     private BigDecimal mainDept;
     private Date dueDate;
     private Date insDate;
