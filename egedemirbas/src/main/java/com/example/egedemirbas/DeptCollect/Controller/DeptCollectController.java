@@ -10,10 +10,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 @RestController
@@ -38,8 +38,9 @@ public class DeptCollectController {
 
     //Kullanıcının ödediği toplam gecikme zammı listelenebilmelidir
     @GetMapping("/total/late-fee/user/{userId}")
-    public List<DeptCollect> findTotalLateFeeByUserId(@PathVariable Long userId){
-
+    public BigDecimal findTotalLateFeeByUserId(@PathVariable Long userId){
+        BigDecimal totalPayment = deptCollectEntityService.countAllByUserIdAndDeptType(userId, EnumDeptType.LATE_FEE);
+       return totalPayment;
     }
 
     //Belirtilen tarihler arasında yapılan tahsilatlar listelenebilmelidir
@@ -50,7 +51,7 @@ public class DeptCollectController {
 
     //Tahsilat yapan,
     @PostMapping("")
-    public BigDecimal save(@RequestBody Dept dept) throws ParseException {
+    public BigDecimal save(@RequestBody Dept dept)  {
 
         BigDecimal totalPayment = BigDecimal.valueOf(0);
         BigDecimal lateFee = BigDecimal.valueOf(0);
@@ -62,11 +63,9 @@ public class DeptCollectController {
 
             //Tabloya gerek yok. Statik bir değişken üzerinden oranları tutabilirsiniz. 01.01.2018 öncesi 1.5, sonrası ise 2.0 olacak şekilde Kabul edilebilir.
             Long days = ChronoUnit.DAYS.between(dept.getDueDate().toInstant(), dateNow.toInstant());
+            Date goldenDate = new GregorianCalendar(2018, Calendar.FEBRUARY, 01).getTime();
 
-            String taxTypeDate="2018/01/01";
-            Date taxDate = new SimpleDateFormat("yyyy/MM/dd").parse(taxTypeDate);
-
-            if(dept.getDueDate().compareTo(taxDate) > 0)
+            if(dept.getDueDate().compareTo(goldenDate) > 0)
                 lateFee = BigDecimal.valueOf(days * 2.0);
             else
                 lateFee = BigDecimal.valueOf(days * 1.5);
@@ -79,7 +78,8 @@ public class DeptCollectController {
             //Bağlı olduğu borç bilgisi muhakkak tutulmalıdır ki hangi borca istinaden bu gecikme zammı oluşmuş, görünebilsin.
             newDept.setMainDeptId(dept.getMainDeptId());
             newDept.setMainDept(lateFee);
-            newDept.setEnumDeptType(EnumDeptType.LATE);
+            newDept.setEnumDeptType(EnumDeptType.LATE_FEE);
+            deptEntityService.save(newDept);
         }
         totalPayment = dept.getMainDept().add(lateFee);
 
@@ -87,9 +87,13 @@ public class DeptCollectController {
         deptCollect.setDeptId(dept.getMainDeptId());
         deptCollect.setTransacDate(dateNow);
         deptCollect.setAmount(totalPayment);
+        deptCollect.setUserId(dept.getUserId());
+        deptCollectEntityService.save(deptCollect);
 
         //Asıl borç ve buna bağlı olan, tahsilat anında oluşturulan gecikme zammı borcunun borç tutarları 0(sıfır) yapılır.
         dept.setMainDept(BigDecimal.valueOf(0));
+        deptEntityService.save(dept);
+
         return totalPayment;
     }
 }

@@ -1,10 +1,14 @@
 package com.example.egedemirbas.DeptCollect.Service;
 
+import com.example.egedemirbas.Dept.Entity.Dept;
+import com.example.egedemirbas.Dept.Enum.EnumDeptType;
 import com.example.egedemirbas.DeptCollect.Dao.DeptCollectDao;
 import com.example.egedemirbas.DeptCollect.Entity.DeptCollect;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -32,5 +36,9 @@ public class DeptCollectEntityService {
 
     public List<DeptCollect> findAllByTransacDateBetweenLowerAndUpper(Date lowerBound, Date upperBound){
         return deptCollectDao.findAllByTransacDateBetweenLowerAndUpper(lowerBound, upperBound);
+    }
+
+    public BigDecimal countAllByUserIdAndDeptType(Long userId, EnumDeptType deptType){
+        return deptCollectDao.countAllByUserIdAndDeptType(userId, deptType);
     }
 }

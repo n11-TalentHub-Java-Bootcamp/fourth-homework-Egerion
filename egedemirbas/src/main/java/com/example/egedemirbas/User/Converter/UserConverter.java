@@ -9,6 +9,6 @@ public interface UserConverter {
 
     UserConverter INSTANCE = Mappers.getMapper(UserConverter.class);
 
-    @Mapping(target = "id", source = "id")
+    @Mapping(source = "id", target ="id")
     User convertUserDtoToUser(UserDto userdto);
 }

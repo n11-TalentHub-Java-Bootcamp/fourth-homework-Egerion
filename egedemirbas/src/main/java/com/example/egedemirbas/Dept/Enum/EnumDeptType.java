@@ -3,7 +3,8 @@ package com.example.egedemirbas.Dept.Enum;
 public enum EnumDeptType {
 
     NORMAL("NORMAL_DEPT"),
-    LATE("LATE_FEE");
+    LATE("LATE_DEPT"),
+    LATE_FEE("LATE_FEE");
 
     private String type;
 
